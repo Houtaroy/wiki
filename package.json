@@ -1,0 +1,24 @@
+{
+  "name": "wiki",
+  "version": "2022.0.0",
+  "description": "Wiki",
+  "main": "index.js",
+  "scripts": {
+	"docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Houtaroy/wiki.git"
+  },
+  "author": "Houtaroy",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Houtaroy/wiki/issues"
+  },
+  "homepage": "https://github.com/Houtaroy/wiki#readme",
+  "devDependencies": {
+    "vitepress": "^0.22.3"
+  }
+}
