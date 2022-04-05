@@ -30,6 +30,11 @@ export default defineConfig({
       "/vue/": getVueSidebar(),
       "/training-record": getTrainingRecordSidebar(),
     },
+    algolia: {
+      appId: "BMO5G826VG",
+      apiKey: "7963ad1fba44b711a1dae1958ef42590",
+      indexName: "wiki",
+    },
   },
 });
 
