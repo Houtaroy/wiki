@@ -5,7 +5,7 @@ heroAlt: Logo image
 heroText: Houtaroy
 tagline: 给时光以生命, 而不是给生命以时光
 actionText: 开始
-actionLink: /java/base
+actionLink: /java/
 features:
   - title: 正确学习
     details: 不要为了学习而学习, 形式主义只能感动自己
