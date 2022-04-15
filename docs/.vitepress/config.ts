@@ -7,17 +7,9 @@ export default defineConfig({
   themeConfig: {
     nav: [
       {
-        text: "技术栈",
-        items: [
-          {
-            text: "Java",
-            link: "/java/base",
-          },
-          {
-            text: "vue",
-            link: "/vue/base",
-          },
-        ],
+        text: "Java",
+        link: "/java/",
+        activeMatch: "^/java/",
       },
       {
         text: "培训记录",
@@ -27,7 +19,6 @@ export default defineConfig({
     ],
     sidebar: {
       "/java/": getJavaSidebar(),
-      "/vue/": getVueSidebar(),
       "/training-record": getTrainingRecordSidebar(),
     },
     algolia: {
@@ -43,9 +34,24 @@ function getJavaSidebar() {
     {
       text: "Java",
       children: [
-        { text: "基础知识", link: "/java/base" },
-        { text: "进阶知识", link: "/java/advanced" },
-        { text: "开发手册", link: "/java/standard" },
+        { text: "目录", link: "/java/" },
+        { text: "开发手册", link: "/java/开发手册" },
+        {
+          text: "使用Druid解析SQL查询语句",
+          link: "/java/使用Druid解析SQL查询语句",
+        },
+        {
+          text: "SpringBoot整合钉钉SDK",
+          link: "/java/SpringBoot整合钉钉SDK",
+        },
+        {
+          text: "SpringCloud分布式事务Seata",
+          link: "/java/SpringCloud分布式事务Seata",
+        },
+        {
+          text: "SpringBoot整合Elasticsearch",
+          link: "/java/SpringBoot整合Elasticsearch/",
+        },
       ],
     },
   ];
@@ -56,15 +62,6 @@ function getTrainingRecordSidebar() {
     {
       text: "培训记录",
       children: [{ text: "微服务", link: "/training-record/micro-service" }],
-    },
-  ];
-}
-
-function getVueSidebar() {
-  return [
-    {
-      text: "Vue",
-      children: [{ text: "基础知识", link: "/vue/base" }],
     },
   ];
 }
