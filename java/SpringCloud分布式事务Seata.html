@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SpringCloud分布式事务Seata | Houtaroy Wiki</title>
+    <meta name="description" content="给时光以生命, 而不是给生命以时光">
+    <link rel="stylesheet" href="/wiki/assets/style.5f10c5ca.css">
+    <link rel="modulepreload" href="/wiki/assets/chunks/AlgoliaSearchBox.1f22568a.js">
+    <link rel="modulepreload" href="/wiki/assets/app.7004e06b.js">
+    <link rel="modulepreload" href="/wiki/assets/java_SpringCloud分布式事务Seata.md.03353e86.lean.js">
+    
+    <meta name="twitter:title" content="SpringCloud分布式事务Seata | Houtaroy Wiki">
+  <meta property="og:title" content="SpringCloud分布式事务Seata | Houtaroy Wiki">
+  </head>
+  <body>
+    <div id="app"><!--[--><div class="theme"><header class="nav-bar" data-v-2ba227d5><div class="sidebar-button" data-v-2ba227d5><svg class="icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z" class></path></svg></div><a class="nav-bar-title" href="/wiki/" aria-label="Houtaroy Wiki, back to home" data-v-2ba227d5 data-v-b3da5816><!----> Houtaroy Wiki</a><div class="flex-grow" data-v-2ba227d5></div><div class="nav" data-v-2ba227d5><nav class="nav-links" data-v-2ba227d5 data-v-0fce24fe><!--[--><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item active" href="/wiki/java/" data-v-2cb643ba>Java <!----></a></div></div><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item" href="/wiki/training-record/micro-service" data-v-2cb643ba>培训记录 <!----></a></div></div><!--]--><!----><!----></nav></div><!--[--><!--[--><div class="algolia-search-box" id="docsearch"></div><!--]--><!--]--></header><aside class="sidebar" data-v-79af364c><nav class="nav-links nav" data-v-79af364c data-v-0fce24fe><!--[--><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item active" href="/wiki/java/" data-v-2cb643ba>Java <!----></a></div></div><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item" href="/wiki/training-record/micro-service" data-v-2cb643ba>培训记录 <!----></a></div></div><!--]--><!----><!----></nav><!--[--><!--]--><ul class="sidebar-links" data-v-79af364c><!--[--><li class="sidebar-link"><p class="sidebar-link-item">Java</p><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/">目录</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/开发手册">开发手册</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/使用Druid解析SQL查询语句">使用Druid解析SQL查询语句</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/SpringBoot整合钉钉SDK">SpringBoot整合钉钉SDK</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item active" href="/wiki/java/SpringCloud分布式事务Seata">SpringCloud分布式事务Seata</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#前言">前言</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#术语解析">术语解析</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#技术选型">技术选型</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#部署seata-server">部署Seata Server</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#初始化数据库">初始化数据库</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#自定义配置文件">自定义配置文件</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#使用docker-compose启动">使用docker-compose启动</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="#业务系统集成seata-client">业务系统集成Seata Client</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#初始化数据库-1">初始化数据库</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#自定义配置文件-1">自定义配置文件</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#引入启动类依赖">引入启动类依赖</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="#事务分组">事务分组</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#seata-server配置">Seata Server配置</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#seata-client配置">Seata Client配置</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#应用场景">应用场景</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="#总结">总结</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/SpringBoot整合Elasticsearch/">SpringBoot整合Elasticsearch</a><!----></li></ul></li><!--]--></ul><!--[--><!--]--></aside><div class="sidebar-mask"></div><main class="page" data-v-30e7de44><div class="container" data-v-30e7de44><!--[--><!--]--><div style="position:relative;" class="content" data-v-30e7de44><div><h1 id="springcloud分布式事务seata" tabindex="-1">SpringCloud分布式事务Seata <a class="header-anchor" href="#springcloud分布式事务seata" aria-hidden="true">#</a></h1><h2 id="前言" tabindex="-1">前言 <a class="header-anchor" href="#前言" aria-hidden="true">#</a></h2><p>阅读本篇文章您将了解到如下内容:</p><ul><li>Seata</li><li>Seata Server 部署</li><li>Seata 事务分组</li></ul><p>如果您了解以下内容, 可便于理解:</p><ul><li><a href="https://spring.io/projects/spring-cloud-alibaba" target="_blank" rel="noopener noreferrer">Spring Cloud Alibaba</a></li><li><a href="https://nacos.io/zh-cn/" target="_blank" rel="noopener noreferrer">Nacos</a></li><li><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener noreferrer">Docker Compose</a></li></ul><p>本文为应用型文章, 将不会阐述过多理论知识</p><h2 id="术语解析" tabindex="-1">术语解析 <a class="header-anchor" href="#术语解析" aria-hidden="true">#</a></h2><p>本次部署中会用到以下术语:</p><ul><li>Seata Server: Seata服务端, 官方称之为事务协调者TC(<strong>T</strong>ransaction <strong>C</strong>oordinator), 单独部署</li><li>Seata Client: Seata客户端, 官方称之为资源管理器RM(<strong>R</strong>esource <strong>M</strong>anager), 与业务系统集成</li></ul><p>官方术语表: <a href="https://seata.io/zh-cn/docs/overview/terminology.html" target="_blank" rel="noopener noreferrer">Seata术语</a></p><h2 id="技术选型" tabindex="-1">技术选型 <a class="header-anchor" href="#技术选型" aria-hidden="true">#</a></h2><p>Seata有多种部署方案, 生产环境推荐使用如下方式: 注册中心+配置中心+数据库</p><p>对应的技术栈如下:</p><ul><li>注册中心: Nacos</li><li>配置中心: Nacos</li><li>数据库: MySQL 8.0</li></ul><h2 id="部署seata-server" tabindex="-1">部署Seata Server <a class="header-anchor" href="#部署seata-server" aria-hidden="true">#</a></h2><h3 id="初始化数据库" tabindex="-1">初始化数据库 <a class="header-anchor" href="#初始化数据库" aria-hidden="true">#</a></h3><p>创建数据库seata-server及对应的访问用户seata</p><p>使用官方的数据库脚本进行初始化: <a href="https://github.com/seata/seata/tree/develop/script/server/db" target="_blank" rel="noopener noreferrer">seata/script/server/db at develop</a></p><p>除MySQL以外还支持Oracle和PostgreSQL</p><h3 id="自定义配置文件" tabindex="-1">自定义配置文件 <a class="header-anchor" href="#自定义配置文件" aria-hidden="true">#</a></h3><p>参照官方部署文档: <a href="https://seata.io/zh-cn/docs/ops/deploy-by-docker-compose.html" target="_blank" rel="noopener noreferrer">使用 Docker compose 快速部署 Seata Server</a></p><p>编写服务端配置文件<code>registry.conf</code>:</p><div class="language-"><pre><code>registry {
+  type = &quot;nacos&quot;
+
+  nacos {
+  	# 服务名称
+    application = &quot;seata-server&quot;
+    serverAddr = &quot;127.0.0.1:8848&quot;
+    # 命名空间ID
+    namespace = &quot;spring-cloud-development&quot;
+    group = &quot;SEATA_GROUP&quot;
+    # 集群名称
+    cluster = &quot;default&quot;
+  }
+}
+
+config {
+  type = &quot;nacos&quot;
+
+  nacos {
+    serverAddr = &quot;127.0.0.1:8848&quot;
+    namespace = &quot;spring-cloud-development&quot;
+    group = &quot;SEATA_GROUP&quot;
+    # 配置文件dataId
+    dataId: &quot;seata-server.properties&quot;
+  }
+}
+</code></pre></div><p>在nacos中增加配置<code>seata-server.properties</code>, 调整为数据库模式:</p><div class="language-properties"><pre><code><span class="token attr-name">store.mode</span><span class="token punctuation">=</span><span class="token attr-value">db</span>
+<span class="token attr-name">store.db.datasource</span><span class="token punctuation">=</span><span class="token attr-value">druid</span>
+<span class="token attr-name">store.db.dbType</span><span class="token punctuation">=</span><span class="token attr-value">mysql</span>
+<span class="token attr-name">store.db.driverClassName</span><span class="token punctuation">=</span><span class="token attr-value">com.mysql.cj.jdbc.Driver</span>
+<span class="token attr-name">store.db.url</span><span class="token punctuation">=</span><span class="token attr-value">jdbc:mysql://127.0.0.1:3306/seata-server?useUnicode=true&amp;characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true&amp;useSSL=false</span>
+<span class="token attr-name">store.db.user</span><span class="token punctuation">=</span><span class="token attr-value">seata</span>
+<span class="token attr-name">store.db.password</span><span class="token punctuation">=</span><span class="token attr-value">seata</span>
+</code></pre></div><p><strong>注意: 配置的dataId和group应与<code>registry.conf</code>中的一致</strong></p><h3 id="使用docker-compose启动" tabindex="-1">使用docker-compose启动 <a class="header-anchor" href="#使用docker-compose启动" aria-hidden="true">#</a></h3><p>对docker-compose不再赘述, 可阅读前言中的官方文档</p><p>编写<code>docker-compose.yaml</code>:</p><div class="language-yaml"><pre><code><span class="token comment"># 根据自己的docker版本选择对应的version</span>
+<span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">&quot;3.1&quot;</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">seata-server</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> seataio/seata<span class="token punctuation">-</span>server<span class="token punctuation">:</span>1.4.2
+    <span class="token key atrule">hostname</span><span class="token punctuation">:</span> seata<span class="token punctuation">-</span>server
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;8091:8091&quot;</span>
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> SEATA_PORT=8091
+      <span class="token punctuation">-</span> SEATA_IP=127.0.0.1
+      <span class="token comment"># 此处有坑</span>
+      <span class="token punctuation">-</span> SEATA_CONFIG_NAME=file<span class="token punctuation">:</span>/root/seata<span class="token punctuation">-</span>config/registry
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token comment"># 此处有坑</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;./seata-server/config:/root/seata-config&quot;</span>
+</code></pre></div><p>这里有两个因为笔者不熟悉docker产生的坑:</p><p>环境变量<code>SEATA_CONFIG_NAME</code>, 指的是<strong>容器内部的环境</strong></p><p>所以路径<code>file:/root/seata-config/registry</code>是指, <strong>服务端读取的配置文件<code>registry.conf</code>为容器内部的<code>/root/seata-config/registry.conf</code></strong></p><p>并非我们本机的<code>/root/seata-config/registry</code></p><p>所以我们要将自己写的配置文件映射到其内部中, 即后面一个坑: <code>&quot;./seata-server/config:/root/seata-config&quot;</code></p><p>它的含义是<strong>将本机路径<code>./seata-server/config</code>映射到容器内部路径<code>/root/seata-config</code></strong></p><p>综上, 我们需要完成的操作是:</p><ol><li>在<code>docker-compose.yaml</code>目录下创建<code>seata-server/config</code>目录</li><li>将<code>registry.conf</code>文件放置到<code>${docker-compose.yaml目录}/seata-server/config</code></li><li>运行命令<code>docker-compose up -d</code></li></ol><p>如果您遇到了<code>io.seata.common.exception.NotSupportYetException: config type can not be null</code>, 请仔细阅读上述内容</p><h2 id="业务系统集成seata-client" tabindex="-1">业务系统集成Seata Client <a class="header-anchor" href="#业务系统集成seata-client" aria-hidden="true">#</a></h2><h3 id="初始化数据库-1" tabindex="-1">初始化数据库 <a class="header-anchor" href="#初始化数据库-1" aria-hidden="true">#</a></h3><p>在业务系统中增加<code>undo_log</code>表:</p><div class="language-mysql"><pre><code>-- 注意此处0.3.0+ 增加唯一索引 ux_undo_log
+CREATE TABLE `undo_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `branch_id` bigint(20) NOT NULL,
+  `xid` varchar(100) NOT NULL,
+  `context` varchar(128) NOT NULL,
+  `rollback_info` longblob NOT NULL,
+  `log_status` int(11) NOT NULL,
+  `log_created` datetime NOT NULL,
+  `log_modified` datetime NOT NULL,
+  `ext` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+</code></pre></div><h3 id="自定义配置文件-1" tabindex="-1">自定义配置文件 <a class="header-anchor" href="#自定义配置文件-1" aria-hidden="true">#</a></h3><p>在nacos中增加客户端公共配置文件<code>seata-client.properties</code>:</p><div class="language-properties"><pre><code><span class="token attr-name">seata.registry.type</span><span class="token punctuation">=</span><span class="token attr-value">nacos</span>
+<span class="token attr-name">seata.registry.nacos.server-addr</span><span class="token punctuation">=</span><span class="token attr-value">127.0.0.1:8848</span>
+<span class="token attr-name">seata.registry.nacos.namespace</span><span class="token punctuation">=</span><span class="token attr-value">spring-cloud-development</span>
+<span class="token attr-name">seata.registry.nacos.group</span><span class="token punctuation">=</span><span class="token attr-value">SEATA_GROUP</span>
+<span class="token attr-name">seata.registry.nacos.application</span><span class="token punctuation">=</span><span class="token attr-value">seata-server</span>
+
+<span class="token attr-name">seata.config.type</span><span class="token punctuation">=</span><span class="token attr-value">nacos</span>
+<span class="token attr-name">seata.config.nacos.server-addr</span><span class="token punctuation">=</span><span class="token attr-value">127.0.0.1:8848</span>
+<span class="token attr-name">seata.config.nacos.namespace</span><span class="token punctuation">=</span><span class="token attr-value">spring-cloud-development</span>
+<span class="token attr-name">seata.config.nacos.group</span><span class="token punctuation">=</span><span class="token attr-value">SEATA_GROUP</span>
+</code></pre></div><p><strong>注意: 客户端配置的group应与服务端配置相同</strong></p><h3 id="引入启动类依赖" tabindex="-1">引入启动类依赖 <a class="header-anchor" href="#引入启动类依赖" aria-hidden="true">#</a></h3><p>按照<a href="https://seata.io/zh-cn/docs/ops/deploy-guide-beginner.html" target="_blank" rel="noopener noreferrer">Seata部署指南</a>推荐的方式在<code>pom.xml</code>中引入依赖<code>spring-cloud-starter-alibaba-seata</code>:</p><div class="language-xml"><pre><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.seata<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>seata-spring-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>最新版<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.alibaba.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>spring-cloud-starter-alibaba-seata<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>2.2.1.RELEASE<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>exclusions</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>exclusion</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>io.seata<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>seata-spring-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>exclusion</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>exclusions</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>之后再引入上一节中的客户端配置即可:</p><div class="language-yaml"><pre><code><span class="token key atrule">spring</span><span class="token punctuation">:</span>
+  <span class="token key atrule">cloud</span><span class="token punctuation">:</span>
+    <span class="token key atrule">nacos</span><span class="token punctuation">:</span>
+      <span class="token key atrule">config</span><span class="token punctuation">:</span>
+        <span class="token key atrule">shared-configs</span><span class="token punctuation">:</span>
+          <span class="token punctuation">-</span> <span class="token key atrule">data-id</span><span class="token punctuation">:</span> seata<span class="token punctuation">-</span>client.properties
+            <span class="token key atrule">group</span><span class="token punctuation">:</span> SEATA_GROUP
+</code></pre></div><h2 id="事务分组" tabindex="-1">事务分组 <a class="header-anchor" href="#事务分组" aria-hidden="true">#</a></h2><p>想要学会一个概念, 最重要的是了解为什么要使用它</p><p>回顾最开始的概念, Seata Server是事务协调者TC(<strong>T</strong>ransaction <strong>C</strong>oordinator)</p><p>也就是说它在分布式事务中起到至关重要的作用</p><p>但如何它挂了呢?或者网络波动了呢?</p><p>所以事务分组其实可以理解为Seata Server集群分组, 是为了TC的高可用</p><h3 id="seata-server配置" tabindex="-1">Seata Server配置 <a class="header-anchor" href="#seata-server配置" aria-hidden="true">#</a></h3><p>服务端要明确自己的分组名称, 修改<code>registry.conf</code>文件:</p><div class="language-"><pre><code>registry {
+
+  nacos {
+  	# Seata Server所属集群名称为dev
+    cluster = &quot;dev&quot;
+  }
+}
+</code></pre></div><p>按照官方文档<a href="https://seata.io/zh-cn/docs/user/txgroup/transaction-group.html" target="_blank" rel="noopener noreferrer">Seata 事务分组</a>, 此处有一个坑</p><p><strong>需要在nacos中增加一个事务组名对应集群名的配置</strong></p><p>以上面的集群为例, 需要增加<code>service.vgroup-mapping.${分组名}</code>配置, 内容为集群名称: <code>dev</code></p><p>原因在于<code>RegistryService</code>中如下代码:</p><div class="language-java"><pre><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">RegistryService</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+    <span class="token class-name">String</span> PREFIX_SERVICE_MAPPING <span class="token operator">=</span> <span class="token string">&quot;vgroupMapping.&quot;</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">String</span> PREFIX_SERVICE_ROOT <span class="token operator">=</span> <span class="token string">&quot;service&quot;</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">String</span> CONFIG_SPLIT_CHAR <span class="token operator">=</span> <span class="token string">&quot;.&quot;</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">default</span> <span class="token class-name">String</span> <span class="token function">getServiceGroup</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 假设分组名为group-dev</span>
+        <span class="token comment">// 会在nacos中寻找dataId为service.vgroupMapping.group-dev的配置</span>
+        key <span class="token operator">=</span> PREFIX_SERVICE_ROOT <span class="token operator">+</span> CONFIG_SPLIT_CHAR <span class="token operator">+</span> PREFIX_SERVICE_MAPPING <span class="token operator">+</span> key<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>SERVICE_GROUP_NAME<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token class-name">ConfigurationCache</span><span class="token punctuation">.</span><span class="token function">addConfigListener</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            SERVICE_GROUP_NAME<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token class-name">ConfigurationFactory</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getConfig</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果客户端启动后遇到<code>can not get cluster name in registry config &#39;service.vgroupMapping.xx&#39;, please make sure registry config correct</code></p><p>请仔细阅读上述内容</p><h3 id="seata-client配置" tabindex="-1">Seata Client配置 <a class="header-anchor" href="#seata-client配置" aria-hidden="true">#</a></h3><p>在项目配置中增加如下内容即可:</p><div class="language-yaml"><pre><code><span class="token key atrule">seata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">tx-service-group</span><span class="token punctuation">:</span> group<span class="token punctuation">-</span>dev
+</code></pre></div><p>最终效果为: 事务组<code>group-dev</code>会使用集群名称为<code>dev</code>的TC</p><h3 id="应用场景" tabindex="-1">应用场景 <a class="header-anchor" href="#应用场景" aria-hidden="true">#</a></h3><p>官方提供了很好的示例, 可参照: <a href="https://seata.io/zh-cn/docs/user/txgroup/transaction-group-and-ha.html" target="_blank" rel="noopener noreferrer">事务分组与高可用 (seata.io)</a></p><h2 id="总结" tabindex="-1">总结 <a class="header-anchor" href="#总结" aria-hidden="true">#</a></h2><p>纸上得来终觉浅</p><p>理解Seata和实际部署Seata之间, 还隔着docker/nacos等技术鸿沟</p><p>最后总结下使用Seata的整体流程:</p><ol><li>部署Seata Server</li><li>为事务进行分组</li><li>业务系统集成Seata Client</li></ol><p><strong>我是Houtaroy, 若有一行代码能为他人提供帮助, 便是在下的毕生荣幸</strong></p></div></div><footer class="page-footer" data-v-30e7de44 data-v-504b1bfc><div class="edit" data-v-504b1bfc><div class="edit-link" data-v-504b1bfc data-v-40c300d5><!----></div></div><div class="updated" data-v-504b1bfc><!----></div></footer><div class="next-and-prev-link" data-v-30e7de44 data-v-0f10f042><div class="container" data-v-0f10f042><div class="prev" data-v-0f10f042><a class="link" href="/wiki/java/SpringBoot整合钉钉SDK" data-v-0f10f042><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class="icon icon-prev" data-v-0f10f042><path d="M19,11H7.4l5.3-5.3c0.4-0.4,0.4-1,0-1.4s-1-0.4-1.4,0l-7,7c-0.1,0.1-0.2,0.2-0.2,0.3c-0.1,0.2-0.1,0.5,0,0.8c0.1,0.1,0.1,0.2,0.2,0.3l7,7c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L7.4,13H19c0.6,0,1-0.4,1-1S19.6,11,19,11z"></path></svg><span class="text" data-v-0f10f042>SpringBoot整合钉钉SDK</span></a></div><div class="next" data-v-0f10f042><a class="link" href="/wiki/java/SpringBoot整合Elasticsearch/" data-v-0f10f042><span class="text" data-v-0f10f042>SpringBoot整合Elasticsearch</span><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class="icon icon-next" data-v-0f10f042><path d="M19.9,12.4c0.1-0.2,0.1-0.5,0-0.8c-0.1-0.1-0.1-0.2-0.2-0.3l-7-7c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4l5.3,5.3H5c-0.6,0-1,0.4-1,1s0.4,1,1,1h11.6l-5.3,5.3c-0.4,0.4-0.4,1,0,1.4c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3l7-7C19.8,12.6,19.9,12.5,19.9,12.4z"></path></svg></a></div></div></div><!--[--><!--]--></div></main></div><!----><!--]--></div>
+    <script>__VP_HASH_MAP__ = JSON.parse("{\"index.md\":\"3818ae6a\",\"java_springboot整合elasticsearch_index.md\":\"7b633122\",\"java_springboot整合钉钉sdk.md\":\"c26aa1a8\",\"java_springcloud分布式事务seata.md\":\"03353e86\",\"java_index.md\":\"19a7e8a6\",\"java_使用druid解析sql查询语句.md\":\"fed2d013\",\"java_开发手册.md\":\"668b2141\",\"training-record_micro-service.md\":\"9034774f\"}")</script>
+    <script type="module" async src="/wiki/assets/app.7004e06b.js"></script>
+    
+  </body>
+</html>

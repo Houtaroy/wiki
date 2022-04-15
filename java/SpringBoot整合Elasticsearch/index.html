@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SpringBoot整合Elasticsearch | Houtaroy Wiki</title>
+    <meta name="description" content="给时光以生命, 而不是给生命以时光">
+    <link rel="stylesheet" href="/wiki/assets/style.5f10c5ca.css">
+    <link rel="modulepreload" href="/wiki/assets/chunks/AlgoliaSearchBox.1f22568a.js">
+    <link rel="modulepreload" href="/wiki/assets/app.7004e06b.js">
+    <link rel="modulepreload" href="/wiki/assets/java_SpringBoot整合Elasticsearch_index.md.7b633122.lean.js">
+    
+    <meta name="twitter:title" content="SpringBoot整合Elasticsearch | Houtaroy Wiki">
+  <meta property="og:title" content="SpringBoot整合Elasticsearch | Houtaroy Wiki">
+  </head>
+  <body>
+    <div id="app"><!--[--><div class="theme"><header class="nav-bar" data-v-2ba227d5><div class="sidebar-button" data-v-2ba227d5><svg class="icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z" class></path></svg></div><a class="nav-bar-title" href="/wiki/" aria-label="Houtaroy Wiki, back to home" data-v-2ba227d5 data-v-b3da5816><!----> Houtaroy Wiki</a><div class="flex-grow" data-v-2ba227d5></div><div class="nav" data-v-2ba227d5><nav class="nav-links" data-v-2ba227d5 data-v-0fce24fe><!--[--><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item active" href="/wiki/java/" data-v-2cb643ba>Java <!----></a></div></div><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item" href="/wiki/training-record/micro-service" data-v-2cb643ba>培训记录 <!----></a></div></div><!--]--><!----><!----></nav></div><!--[--><!--[--><div class="algolia-search-box" id="docsearch"></div><!--]--><!--]--></header><aside class="sidebar" data-v-79af364c><nav class="nav-links nav" data-v-79af364c data-v-0fce24fe><!--[--><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item active" href="/wiki/java/" data-v-2cb643ba>Java <!----></a></div></div><div class="item" data-v-0fce24fe><div class="nav-link" data-v-0fce24fe data-v-2cb643ba><a class="item" href="/wiki/training-record/micro-service" data-v-2cb643ba>培训记录 <!----></a></div></div><!--]--><!----><!----></nav><!--[--><!--]--><ul class="sidebar-links" data-v-79af364c><!--[--><li class="sidebar-link"><p class="sidebar-link-item">Java</p><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/">目录</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/开发手册">开发手册</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/使用Druid解析SQL查询语句">使用Druid解析SQL查询语句</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/SpringBoot整合钉钉SDK">SpringBoot整合钉钉SDK</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="/wiki/java/SpringCloud分布式事务Seata">SpringCloud分布式事务Seata</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item active" href="/wiki/java/SpringBoot整合Elasticsearch/">SpringBoot整合Elasticsearch</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#_1-前言">1 前言</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_2-spring-boot使用spring-data-elasticsearch集成elasticsearch">2 Spring Boot使用Spring Data Elasticsearch集成Elasticsearch</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#_2-1-引入依赖">2.1 引入依赖</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_2-2-配置文件">2.2 配置文件</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_3-索引内容的增删改查">3 索引内容的增删改查</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#_3-1-创建实体类">3.1 创建实体类</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_3-2-创建存储库类">3.2 创建存储库类</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_3-3-创建服务类">3.3 创建服务类</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_3-4-创建接口">3.4 创建接口</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_3-5-测试">3.5 测试</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_4-全文检索">4 全文检索</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#_4-1-全文检索方法">4.1 全文检索方法</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_4-2-高亮">4.2 高亮</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_4-3-排序">4.3 排序</a><!----></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_4-4-中文分词器">4.4 中文分词器</a><!----></li></ul></li><li class="sidebar-link"><a class="sidebar-link-item" href="#_5-建议器">5 建议器</a><ul class="sidebar-links"><li class="sidebar-link"><a class="sidebar-link-item" href="#_5-1-补齐建议器">5.1 补齐建议器</a><!----></li></ul></li></ul></li></ul></li><!--]--></ul><!--[--><!--]--></aside><div class="sidebar-mask"></div><main class="page" data-v-30e7de44><div class="container" data-v-30e7de44><!--[--><!--]--><div style="position:relative;" class="content" data-v-30e7de44><div><h1 id="springboot整合elasticsearch" tabindex="-1">SpringBoot整合Elasticsearch <a class="header-anchor" href="#springboot整合elasticsearch" aria-hidden="true">#</a></h1><h2 id="_1-前言" tabindex="-1">1 前言 <a class="header-anchor" href="#_1-前言" aria-hidden="true">#</a></h2><p>阅读本篇文章您可以了解到如下内容:</p><ul><li>[Spring Boot使用Spring Data Elasticsearch集成Elasticsearch](#2 Spring Boot使用Spring Data Elasticsearch集成Elasticsearch)</li><li>[索引内容的增删改查](#3 索引内容的增删改查)</li><li>[全文检索(排序/高亮)](#4 全文检索)</li><li>[建议器的使用(自动补齐)](#5 建议器)</li></ul><p>在此之前, 如果您熟悉以下内容可更方便的进行理解:</p><ul><li>Spring Boot项目构建</li><li>JPA</li><li>搜索引擎相关概念与功能</li></ul><p>项目技术栈与版本:</p><ul><li>Maven: 3.6.3</li><li>Spring Boot: 2.6.3</li><li>Spring Data Elasticsearch: 4.3.1</li><li>Elasticsearch: 7.15.2</li></ul><h2 id="_2-spring-boot使用spring-data-elasticsearch集成elasticsearch" tabindex="-1">2 Spring Boot使用Spring Data Elasticsearch集成Elasticsearch <a class="header-anchor" href="#_2-spring-boot使用spring-data-elasticsearch集成elasticsearch" aria-hidden="true">#</a></h2><h3 id="_2-1-引入依赖" tabindex="-1">2.1 引入依赖 <a class="header-anchor" href="#_2-1-引入依赖" aria-hidden="true">#</a></h3><p>创建Spring Boot项目后, 在pom.xml文件中引入如下依赖:</p><div class="language-xml"><pre><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>spring-boot-starter-data-elasticsearch<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>不用书写version标签, 会自动根据Spring Boot版本号选择</p><h3 id="_2-2-配置文件" tabindex="-1">2.2 配置文件 <a class="header-anchor" href="#_2-2-配置文件" aria-hidden="true">#</a></h3><p>在配置文件application.yml中增加如下配置:</p><div class="language-yaml"><pre><code><span class="token key atrule">elasticsearch</span><span class="token punctuation">:</span>
+    <span class="token key atrule">uris</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> http<span class="token punctuation">:</span>//127.0.0.1<span class="token punctuation">:</span><span class="token number">9200</span>
+</code></pre></div><p>注意<code>uris</code>类型为是字符串数组</p><h2 id="_3-索引内容的增删改查" tabindex="-1">3 索引内容的增删改查 <a class="header-anchor" href="#_3-索引内容的增删改查" aria-hidden="true">#</a></h2><h3 id="_3-1-创建实体类" tabindex="-1">3.1 创建实体类 <a class="header-anchor" href="#_3-1-创建实体类" aria-hidden="true">#</a></h3><p>假设我们需要查询的内容为文章, 其内容包括: 标题/作者/正文/创建时间</p><p>可以创建如下实体类:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@Document</span><span class="token punctuation">(</span>indexName <span class="token operator">=</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Data</span>
+<span class="token annotation punctuation">@NoArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Article</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Id</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> id<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> title<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> author<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> content<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">Date</span> createTime<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><code>@Document</code>注解的作用是标明此类为保存在Elasticsearch的对象, 其中比较重要的两个参数是<strong>索引名称<code>indexName</code><strong>和</strong>是否自动创建索引<code>createIndex</code></strong></p><p><strong>注意: <code>createIndex</code>的默认值为<code>true</code></strong></p><h3 id="_3-2-创建存储库类" tabindex="-1">3.2 创建存储库类 <a class="header-anchor" href="#_3-2-创建存储库类" aria-hidden="true">#</a></h3><p>完成实体类的创建后, 和JPA类似, 需要创建存储库类</p><p>Spring Data Elasticsearch提供了<code>ElasticsearchRepository</code>, 包含了如下图所示的一些常用查询方法:</p><p><img src="/wiki/assets/3-2-1.ae197e0a.png" alt=""></p><div class="language-java"><pre><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ArticleRepository</span> <span class="token keyword">extends</span> <span class="token class-name">ElasticsearchRepository</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ArticleEntity</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果现有方法不足以支撑业务, 可以根据需求进行自定义, 具体自定义方式可参考<a href="https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#elasticsearch.query-methods" target="_blank" rel="noopener noreferrer">官方文档</a></p><h3 id="_3-3-创建服务类" tabindex="-1">3.3 创建服务类 <a class="header-anchor" href="#_3-3-创建服务类" aria-hidden="true">#</a></h3><p>基于上一小节中创建的存储库类, 创建服务类:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@RequiredArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ArticleService</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ArticleRepository</span> articleRepository<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Page</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> <span class="token function">list</span><span class="token punctuation">(</span><span class="token class-name">Pageable</span> pageable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> articleRepository<span class="token punctuation">.</span><span class="token function">findAll</span><span class="token punctuation">(</span>pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Article</span> <span class="token function">loadById</span><span class="token punctuation">(</span><span class="token class-name">String</span> id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> articleRepository<span class="token punctuation">.</span><span class="token function">findById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">orElse</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Article</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">Article</span> article<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        article<span class="token punctuation">.</span><span class="token function">setCreateTime</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> articleRepository<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span>article<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">updateById</span><span class="token punctuation">(</span><span class="token class-name">String</span> id<span class="token punctuation">,</span> <span class="token class-name">Article</span> article<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">Optional</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> optionalDatabaseObject <span class="token operator">=</span> articleRepository<span class="token punctuation">.</span><span class="token function">findById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>optionalDatabaseObject<span class="token punctuation">.</span><span class="token function">isPresent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span><span class="token string">&quot;数据不存在&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token class-name">Article</span> databaseObject <span class="token operator">=</span> optionalDatabaseObject<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BeanUtil</span><span class="token punctuation">.</span><span class="token function">copyProperties</span><span class="token punctuation">(</span>article<span class="token punctuation">,</span> databaseObject<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        articleRepository<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span>databaseObject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">deleteById</span><span class="token punctuation">(</span><span class="token class-name">String</span> id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        articleRepository<span class="token punctuation">.</span><span class="token function">deleteById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_3-4-创建接口" tabindex="-1">3.4 创建接口 <a class="header-anchor" href="#_3-4-创建接口" aria-hidden="true">#</a></h3><p>基于服务类创建REST接口:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">&quot;articles&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@RequiredArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ArticleApi</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ArticleService</span> articleService<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@GetMapping</span>
+    <span class="token keyword">public</span> <span class="token class-name">Page</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> <span class="token function">list</span><span class="token punctuation">(</span><span class="token class-name">Pageable</span> pageable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> articleService<span class="token punctuation">.</span><span class="token function">list</span><span class="token punctuation">(</span>pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">&quot;{id}&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">Article</span> <span class="token function">load</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">&quot;id&quot;</span><span class="token punctuation">)</span> <span class="token class-name">String</span> id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> articleService<span class="token punctuation">.</span><span class="token function">loadById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@PostMapping</span>
+    <span class="token keyword">public</span> <span class="token class-name">Article</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestBody</span> <span class="token class-name">Article</span> article<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        articleService<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>article<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> article<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@PutMapping</span><span class="token punctuation">(</span><span class="token string">&quot;{id}&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">update</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">&quot;id&quot;</span><span class="token punctuation">)</span> <span class="token class-name">String</span> id<span class="token punctuation">,</span> <span class="token annotation punctuation">@RequestBody</span> <span class="token class-name">Article</span> article<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        articleService<span class="token punctuation">.</span><span class="token function">updateById</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> article<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">&quot;更新成功&quot;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@DeleteMapping</span><span class="token punctuation">(</span><span class="token string">&quot;{id}&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">delete</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">&quot;id&quot;</span><span class="token punctuation">)</span> <span class="token class-name">String</span> id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        articleService<span class="token punctuation">.</span><span class="token function">deleteById</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token string">&quot;删除成功&quot;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_3-5-测试" tabindex="-1">3.5 测试 <a class="header-anchor" href="#_3-5-测试" aria-hidden="true">#</a></h3><p>如果使用IDEA编辑器, 可以使用下面的http文件进行测试:</p><div class="language-"><pre><code>### 查询
+GET http://localhost:9999/articles
+Content-Type: application/json
+
+### 根据id查看
+GET http://localhost:9999/articles/1
+Content-Type: application/json
+
+### 新增文章
+POST http://localhost:9999/articles
+Content-Type: application/json
+
+{
+  &quot;id&quot;: &quot;1&quot;,
+  &quot;title&quot;: &quot;测试1&quot;,
+  &quot;author&quot;: &quot;测试1&quot;,
+  &quot;content&quot;: &quot;测试1&quot;
+}
+
+### 更新文章
+PUT http://localhost:9999/articles/1
+Content-Type: application/json
+
+{
+  &quot;title&quot;: &quot;测试1-更新&quot;,
+  &quot;author&quot;: &quot;测试1-更新&quot;,
+  &quot;content&quot;: &quot;测试1-更新&quot;
+}
+
+### 删除文章
+DELETE http://localhost:9999/articles/1
+Content-Type: application/json
+</code></pre></div><h2 id="_4-全文检索" tabindex="-1">4 全文检索 <a class="header-anchor" href="#_4-全文检索" aria-hidden="true">#</a></h2><h3 id="_4-1-全文检索方法" tabindex="-1">4.1 全文检索方法 <a class="header-anchor" href="#_4-1-全文检索方法" aria-hidden="true">#</a></h3><p>假设全文检索的业务需求, 要对文章的标题/作者/正文进行查询, 第三章中的方法无法满足</p><p>修改存储库类, 增加全文检索方法:</p><div class="language-java"><pre><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ArticleRepository</span> <span class="token keyword">extends</span> <span class="token class-name">ElasticsearchRepository</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+    <span class="token class-name">Page</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> <span class="token function">findByTitleOrAuthorOrContent</span><span class="token punctuation">(</span><span class="token class-name">String</span> title<span class="token punctuation">,</span> <span class="token class-name">String</span> author<span class="token punctuation">,</span> <span class="token class-name">String</span> content<span class="token punctuation">,</span> <span class="token class-name">Pageable</span> pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>修改服务类:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@RequiredArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ArticleService</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ArticleRepository</span> articleRepository<span class="token punctuation">;</span>
+
+    <span class="token comment">// 增删改查方法...</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Page</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> <span class="token function">search</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">Pageable</span> pageable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> articleRepository<span class="token punctuation">.</span><span class="token function">findByTitleOrAuthorOrContent</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> key<span class="token punctuation">,</span> key<span class="token punctuation">,</span> pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>增加全文检索接口:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">&quot;articles&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@RequiredArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ArticleApi</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ArticleService</span> articleService<span class="token punctuation">;</span>
+
+    <span class="token comment">// 增删改查接口...</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">&quot;search/{key}&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">Page</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> <span class="token function">search</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">&quot;key&quot;</span><span class="token punctuation">)</span> <span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">Pageable</span> pageable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> articleService<span class="token punctuation">.</span><span class="token function">search</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>录入测试数据后, 利用http文件进行测试:</p><div class="language-"><pre><code>### 全文检索
+GET http://localhost:9999/articles/search/2月
+Content-Type: application/json
+</code></pre></div><p>得到测试结果:</p><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2022年2月14日外交部发言人汪文斌主持例行记者会&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中华人民共和国外交部&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？为纪念这一双边关系发展的重要里程碑，今天，王毅国务委员兼外长与埃布拉德外长分别在对方国家主流媒体上发表署名文章。中墨两国邮政联合发行《中墨建交五十周年》纪念邮票并举行首发仪式。两国15对具有代表性的友好省州和城市还将在地标建筑隆重举行国旗色亮灯仪式或灯光秀，共同庆祝中墨建交50周年，敬请大家期待。&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915609088</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16年等待，空中技巧“王牌之师”再夺冬奥冠军&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华网&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目——自由式滑雪空中技巧混合团体决赛中，和队友贾宗洋、齐广璞携手拿下银牌。对于这块银牌，徐梦桃心有不甘。“后面的个人赛见吧，我将会突出重围，为中国空中技巧争夺荣誉。”赛后，徐梦桃的话铿锵有力。&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915729196</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;水庆霞称希望有个一百平米的房子 自曝脾气暴躁&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;央视新闻&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2月6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。三天后，《面对面》栏目和正在进行医学隔离的中国女足国家队主教练水庆霞进行了连线专访。记者：去年11月18日对外宣布您担任主教练之前，您就曾经表达过，如果有可能，我愿意做中国女足的教练，为什么？水庆霞：从事这么多年的女足工作，从运动员到教练员我觉得女足的情怀始终扎根在心中，我觉得有机会的话要尝试一下吧。对水庆霞的上任，亚足联官网给出这样的评价：她曾经11年5次举起亚洲杯，是首位出任国家队主教练的黄金一代球员，她比任何人都更懂得如何赢得女足亚洲杯。但当时，留给新任主教练准备出征的时间已经不足三个月。&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915672785</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;pageable&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;sort&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;sorted&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;unsorted&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;pageSize&quot;</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;pageNumber&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;unpaged&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;paged&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;totalElements&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;last&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;totalPages&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;number&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;size&quot;</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;sort&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;sorted&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;unsorted&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;numberOfElements&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;first&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_4-2-高亮" tabindex="-1">4.2 高亮 <a class="header-anchor" href="#_4-2-高亮" aria-hidden="true">#</a></h3><p>观察上一节的测试结果, 再观察常用的搜索引擎结果:</p><p><img src="/wiki/assets/4-2-1.08bee77a.png" alt=""></p><p>两者对比存在两个较为明显的差异:</p><ol><li>测试结果中没有对匹配内容进行高亮</li><li>测试结果中返回了文章正文的全部内容, 而非匹配内容的截取</li></ol><p>使用注解<code>@Highlight</code>修改存储库中的全文检索方法可以解决上述问题:</p><div class="language-java"><pre><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ArticleRepository</span> <span class="token keyword">extends</span> <span class="token class-name">ElasticsearchRepository</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Highlight</span><span class="token punctuation">(</span>fields <span class="token operator">=</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@HighlightField</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">&quot;title&quot;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token annotation punctuation">@HighlightField</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">&quot;author&quot;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token annotation punctuation">@HighlightField</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">&quot;content&quot;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token class-name">SearchPage</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Article</span><span class="token punctuation">&gt;</span></span> <span class="token function">findByTitleOrAuthorOrContent</span><span class="token punctuation">(</span><span class="token class-name">String</span> title<span class="token punctuation">,</span> <span class="token class-name">String</span> author<span class="token punctuation">,</span> <span class="token class-name">String</span> content<span class="token punctuation">,</span> <span class="token class-name">Pageable</span> pageable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>注意, 除了增加注解外, <strong>方法的返回结构也需要修改为<code>SearchPage&lt;T&gt;</code></strong>, <code>Page&lt;T&gt;</code>的结构中不包含高亮数据</p><p>依次调整服务类/接口类, 再次进行测试得到的结果如下:</p><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2022年2月14日外交部发言人汪文斌主持例行记者会&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中华人民共和国外交部&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？为纪念这一双边关系发展的重要里程碑，今天，王毅国务委员兼外长与埃布拉德外长分别在对方国家主流媒体上发表署名文章。中墨两国邮政联合发行《中墨建交五十周年》纪念邮票并举行首发仪式。两国15对具有代表性的友好省州和城市还将在地标建筑隆重举行国旗色亮灯仪式或灯光秀，共同庆祝中墨建交50周年，敬请大家期待。&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915609088</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;2022年&lt;em&gt;2月&lt;/em&gt;14日外交部发言人汪文斌主持例行记者会&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16年等待，空中技巧“王牌之师”再夺冬奥冠军&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华网&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目——自由式滑雪空中技巧混合团体决赛中，和队友贾宗洋、齐广璞携手拿下银牌。对于这块银牌，徐梦桃心有不甘。“后面的个人赛见吧，我将会突出重围，为中国空中技巧争夺荣誉。”赛后，徐梦桃的话铿锵有力。&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915729196</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;水庆霞称希望有个一百平米的房子 自曝脾气暴躁&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;央视新闻&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2月6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。三天后，《面对面》栏目和正在进行医学隔离的中国女足国家队主教练水庆霞进行了连线专访。记者：去年11月18日对外宣布您担任主教练之前，您就曾经表达过，如果有可能，我愿意做中国女足的教练，为什么？水庆霞：从事这么多年的女足工作，从运动员到教练员我觉得女足的情怀始终扎根在心中，我觉得有机会的话要尝试一下吧。对水庆霞的上任，亚足联官网给出这样的评价：她曾经11年5次举起亚洲杯，是首位出任国家队主教练的黄金一代球员，她比任何人都更懂得如何赢得女足亚洲杯。但当时，留给新任主教练准备出征的时间已经不足三个月。&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915672785</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;&lt;em&gt;2月&lt;/em&gt;6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;pageable&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;sort&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;sorted&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;unsorted&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;pageNumber&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;pageSize&quot;</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;paged&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;unpaged&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;searchHits&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;totalHits&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;totalHitsRelation&quot;</span><span class="token operator">:</span> <span class="token string">&quot;EQUAL_TO&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;maxScore&quot;</span><span class="token operator">:</span> <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;searchHits&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2022年2月14日外交部发言人汪文斌主持例行记者会&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中华人民共和国外交部&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？为纪念这一双边关系发展的重要里程碑，今天，王毅国务委员兼外长与埃布拉德外长分别在对方国家主流媒体上发表署名文章。中墨两国邮政联合发行《中墨建交五十周年》纪念邮票并举行首发仪式。两国15对具有代表性的友好省州和城市还将在地标建筑隆重举行国旗色亮灯仪式或灯光秀，共同庆祝中墨建交50周年，敬请大家期待。&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915609088</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;2022年&lt;em&gt;2月&lt;/em&gt;14日外交部发言人汪文斌主持例行记者会&quot;</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16年等待，空中技巧“王牌之师”再夺冬奥冠军&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华网&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目——自由式滑雪空中技巧混合团体决赛中，和队友贾宗洋、齐广璞携手拿下银牌。对于这块银牌，徐梦桃心有不甘。“后面的个人赛见吧，我将会突出重围，为中国空中技巧争夺荣誉。”赛后，徐梦桃的话铿锵有力。&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915729196</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目&quot;</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;水庆霞称希望有个一百平米的房子 自曝脾气暴躁&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;央视新闻&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2月6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。三天后，《面对面》栏目和正在进行医学隔离的中国女足国家队主教练水庆霞进行了连线专访。记者：去年11月18日对外宣布您担任主教练之前，您就曾经表达过，如果有可能，我愿意做中国女足的教练，为什么？水庆霞：从事这么多年的女足工作，从运动员到教练员我觉得女足的情怀始终扎根在心中，我觉得有机会的话要尝试一下吧。对水庆霞的上任，亚足联官网给出这样的评价：她曾经11年5次举起亚洲杯，是首位出任国家队主教练的黄金一代球员，她比任何人都更懂得如何赢得女足亚洲杯。但当时，留给新任主教练准备出征的时间已经不足三个月。&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915672785</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;&lt;em&gt;2月&lt;/em&gt;6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。&quot;</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;totalElements&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;totalPages&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;number&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;size&quot;</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;sort&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;sorted&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;unsorted&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;numberOfElements&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;first&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;last&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>其中<code>highlightFields</code>属性中的内容即为所需内容, 且对正文内容进行了截取, 只显示匹配部分</p><h3 id="_4-3-排序" tabindex="-1">4.3 排序 <a class="header-anchor" href="#_4-3-排序" aria-hidden="true">#</a></h3><p>观察上一小节的测试结果, 可以发现默认排序字段是<code>score</code></p><p>使用Spring Data分页查询, 可以通过如下方式实现自定义排序:</p><div class="language-"><pre><code>### 搜索并自定义排序
+GET http://localhost:9999/articles/search/2月?sort=score,desc
+Content-Type: application/json
+</code></pre></div><p>执行请求后, 会发现直接抛出异常<code>No mapping found for [score] in order to sort</code></p><p>这里有个小坑, 需要提前阅读<a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/sort-search-results.html" target="_blank" rel="noopener noreferrer">Elasticsearch排序相关文档</a></p><p>在Elasticsearch中, 排序字段名称为<code>_score</code>, 并非刚才说的<code>score</code></p><p>再次修改请求, 并加入按创建时间倒序的自定义排序:</p><div class="language-"><pre><code>### 搜索并自定义排序
+GET http://localhost:9999/articles/search/2月?sort=_score,desc&amp;sort=createTime,desc
+Content-Type: application/json
+</code></pre></div><p>测试结果:</p><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;sortValues&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+        <span class="token number">1644915609088</span><span class="token punctuation">,</span>
+        <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+        <span class="token number">1644915609088</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2022年2月14日外交部发言人汪文斌主持例行记者会&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中华人民共和国外交部&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？为纪念这一双边关系发展的重要里程碑，今天，王毅国务委员兼外长与埃布拉德外长分别在对方国家主流媒体上发表署名文章。中墨两国邮政联合发行《中墨建交五十周年》纪念邮票并举行首发仪式。两国15对具有代表性的友好省州和城市还将在地标建筑隆重举行国旗色亮灯仪式或灯光秀，共同庆祝中墨建交50周年，敬请大家期待。&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915609088</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;2022年&lt;em&gt;2月&lt;/em&gt;14日外交部发言人汪文斌主持例行记者会&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;sortValues&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+        <span class="token number">1644915729196</span><span class="token punctuation">,</span>
+        <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+        <span class="token number">1644915729196</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16年等待，空中技巧“王牌之师”再夺冬奥冠军&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华网&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目——自由式滑雪空中技巧混合团体决赛中，和队友贾宗洋、齐广璞携手拿下银牌。对于这块银牌，徐梦桃心有不甘。“后面的个人赛见吧，我将会突出重围，为中国空中技巧争夺荣誉。”赛后，徐梦桃的话铿锵有力。&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915729196</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;sortValues&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+        <span class="token number">1644915672785</span><span class="token punctuation">,</span>
+        <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+        <span class="token number">1644915672785</span>
+      <span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;水庆霞称希望有个一百平米的房子 自曝脾气暴躁&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;央视新闻&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2月6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。三天后，《面对面》栏目和正在进行医学隔离的中国女足国家队主教练水庆霞进行了连线专访。记者：去年11月18日对外宣布您担任主教练之前，您就曾经表达过，如果有可能，我愿意做中国女足的教练，为什么？水庆霞：从事这么多年的女足工作，从运动员到教练员我觉得女足的情怀始终扎根在心中，我觉得有机会的话要尝试一下吧。对水庆霞的上任，亚足联官网给出这样的评价：她曾经11年5次举起亚洲杯，是首位出任国家队主教练的黄金一代球员，她比任何人都更懂得如何赢得女足亚洲杯。但当时，留给新任主教练准备出征的时间已经不足三个月。&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915672785</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;&lt;em&gt;2月&lt;/em&gt;6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。&quot;</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;pageable&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;sort&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;sorted&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;unsorted&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;pageNumber&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;pageSize&quot;</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;paged&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;unpaged&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;searchHits&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;totalHits&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;totalHitsRelation&quot;</span><span class="token operator">:</span> <span class="token string">&quot;EQUAL_TO&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;maxScore&quot;</span><span class="token operator">:</span> <span class="token string">&quot;NaN&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;searchHits&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;sortValues&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+          <span class="token number">1644915609088</span><span class="token punctuation">,</span>
+          <span class="token number">1.0043064</span><span class="token punctuation">,</span>
+          <span class="token number">1644915609088</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2022年2月14日外交部发言人汪文斌主持例行记者会&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中华人民共和国外交部&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？新华社记者：今天是中国和墨西哥建交50周年纪念日，中方如何评价过去50年的中墨关系？今天将有哪些庆祝活动？为纪念这一双边关系发展的重要里程碑，今天，王毅国务委员兼外长与埃布拉德外长分别在对方国家主流媒体上发表署名文章。中墨两国邮政联合发行《中墨建交五十周年》纪念邮票并举行首发仪式。两国15对具有代表性的友好省州和城市还将在地标建筑隆重举行国旗色亮灯仪式或灯光秀，共同庆祝中墨建交50周年，敬请大家期待。&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915609088</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;2022年&lt;em&gt;2月&lt;/em&gt;14日外交部发言人汪文斌主持例行记者会&quot;</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;sortValues&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+          <span class="token number">1644915729196</span><span class="token punctuation">,</span>
+          <span class="token number">0.69008076</span><span class="token punctuation">,</span>
+          <span class="token number">1644915729196</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16年等待，空中技巧“王牌之师”再夺冬奥冠军&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华网&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼2月14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目——自由式滑雪空中技巧混合团体决赛中，和队友贾宗洋、齐广璞携手拿下银牌。对于这块银牌，徐梦桃心有不甘。“后面的个人赛见吧，我将会突出重围，为中国空中技巧争夺荣誉。”赛后，徐梦桃的话铿锵有力。&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915729196</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军新华社河北崇礼&lt;em&gt;2月&lt;/em&gt;14日电　题：16年等待，空中技巧“王牌之师”再夺冬奥冠军4天前，张家口云顶滑雪公园，31岁的徐梦桃在北京冬奥会新增项目&quot;</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;index&quot;</span><span class="token operator">:</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;score&quot;</span><span class="token operator">:</span> <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;sortValues&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+          <span class="token number">1644915672785</span><span class="token punctuation">,</span>
+          <span class="token number">0.43025833</span><span class="token punctuation">,</span>
+          <span class="token number">1644915672785</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;水庆霞称希望有个一百平米的房子 自曝脾气暴躁&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;author&quot;</span><span class="token operator">:</span> <span class="token string">&quot;央视新闻&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2月6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。三天后，《面对面》栏目和正在进行医学隔离的中国女足国家队主教练水庆霞进行了连线专访。记者：去年11月18日对外宣布您担任主教练之前，您就曾经表达过，如果有可能，我愿意做中国女足的教练，为什么？水庆霞：从事这么多年的女足工作，从运动员到教练员我觉得女足的情怀始终扎根在心中，我觉得有机会的话要尝试一下吧。对水庆霞的上任，亚足联官网给出这样的评价：她曾经11年5次举起亚洲杯，是首位出任国家队主教练的黄金一代球员，她比任何人都更懂得如何赢得女足亚洲杯。但当时，留给新任主教练准备出征的时间已经不足三个月。&quot;</span><span class="token punctuation">,</span>
+          <span class="token property">&quot;createTime&quot;</span><span class="token operator">:</span> <span class="token number">1644915672785</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;highlightFields&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">&quot;content&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">&quot;&lt;em&gt;2月&lt;/em&gt;6日，农历新年初六，中国女足时隔16年再次问鼎亚洲杯，这场胜利为她们的亚洲杯之旅画上完美的句号，更成为全体国民收到的最好的节日礼物。&quot;</span>
+          <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;totalElements&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;totalPages&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;number&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;size&quot;</span><span class="token operator">:</span> <span class="token number">50</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;sort&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;sorted&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;unsorted&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;numberOfElements&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;first&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;last&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;empty&quot;</span><span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>结果中新增了一个属性<code>sortValues</code>, 正是根据它对数据进行的排序</p><h3 id="_4-4-中文分词器" tabindex="-1">4.4 中文分词器 <a class="header-anchor" href="#_4-4-中文分词器" aria-hidden="true">#</a></h3><p>Elasticsearch提供了分析的REST接口, 先来观察下英文的分词结果:</p><div class="language-"><pre><code>GET http://10.10.10.127:9200/_analyze
+Content-Type: application/json
+
+{
+  &quot;text&quot; : &quot;China No.1&quot;
+}
+</code></pre></div><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;tokens&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;china&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;ALPHANUM&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;no&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;ALPHANUM&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">9</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;NUM&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">2</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>结果为china/no/1, 相当正确</p><p>再来看看中文的:</p><div class="language-"><pre><code>### 分析
+GET http://10.10.10.127:9200/_analyze
+Content-Type: application/json
+
+{
+  &quot;text&quot; : &quot;中国第一&quot;
+}
+</code></pre></div><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;tokens&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;国&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;第&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">2</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;一&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&lt;IDEOGRAPHIC&gt;&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">3</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>竟然一个字一个字的拆分, 这着实有点蠢了, 会出现各种奇葩造句中的搜索结果, 例如<strong>过节</strong>和<strong>杨过节后骑着雕上班</strong></p><p>所以, 选择一个合适的中文分词器至关重要</p><p>在对比过几个中文分词器后, 笔者认为只有一个最佳选择, 那就是<a href="https://github.com/medcl/elasticsearch-analysis-ik" target="_blank" rel="noopener noreferrer">IK分词器</a></p><p>原因有如下两点:</p><ol><li>超高的star数量代表着繁荣的生态</li><li>支持在线热更新字典</li></ol><p>对于IK分词器不再进行过多讲述, 看一下它的中文分词结果:</p><p>ik_smart:</p><div class="language-"><pre><code>### 分析
+GET http://10.10.10.127:9200/_analyze
+Content-Type: application/json
+
+{
+  &quot;analyzer&quot; : &quot;ik_smart&quot;,
+  &quot;text&quot; : &quot;中国第一&quot;
+}
+</code></pre></div><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;tokens&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中国&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;CN_WORD&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;第一&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;CN_WORD&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>ik_max_word:</p><div class="language-"><pre><code>### 分析
+GET http://10.10.10.127:9200/_analyze
+Content-Type: application/json
+
+{
+  &quot;analyzer&quot; : &quot;ik_max_word&quot;,
+  &quot;text&quot; : &quot;中国第一&quot;
+}
+</code></pre></div><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;tokens&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;中国&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;CN_WORD&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;第一&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;CN_WORD&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;token&quot;</span><span class="token operator">:</span> <span class="token string">&quot;一&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;start_offset&quot;</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;end_offset&quot;</span><span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;TYPE_CNUM&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;position&quot;</span><span class="token operator">:</span> <span class="token number">2</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>分词效果不用说, 高下立判</p><p>确定中文分词器后, 需要配置索引默认分词器为IK:</p><p>在resource下创建elasticsearch/settings/default.json:</p><div class="language-json"><pre><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;analysis&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;analyzer&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;default&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;tokenizer&quot;</span><span class="token operator">:</span> <span class="token string">&quot;ik_smart&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>修改文章实体类, 增加注解<code>@Setting</code>:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@Document</span><span class="token punctuation">(</span>indexName <span class="token operator">=</span> <span class="token string">&quot;articles&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Setting</span><span class="token punctuation">(</span>settingPath <span class="token operator">=</span> <span class="token string">&quot;elasticsearch/settings/default.json&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Data</span>
+<span class="token annotation punctuation">@NoArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Article</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Id</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> id<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> title<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> author<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> content<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Field</span>
+    <span class="token keyword">private</span> <span class="token class-name">Date</span> createTime<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="_5-建议器" tabindex="-1">5 建议器 <a class="header-anchor" href="#_5-建议器" aria-hidden="true">#</a></h2><h3 id="_5-1-补齐建议器" tabindex="-1">5.1 补齐建议器 <a class="header-anchor" href="#_5-1-补齐建议器" aria-hidden="true">#</a></h3><p>自动补齐的实现有很多种, 笔者接触的业务逻辑专业性较强且较为简单, 所以本节的内容仅作参考</p><p>描述下业务场景:</p><ol><li>自动补齐内容为热门搜索词汇</li><li>每天产生的搜索词数量极少, 在100-200之间</li><li>已配备运维人员, 会人工干预参与搜索词的权重调整</li></ol><p>针对上述场景, 决定实现方式为:</p><ol><li>每天定时将搜索词全量刷新至Elasticsearch热词索引库</li><li>用户输入时利用补齐建议器查询结果</li></ol><p>创建热门搜索词汇实体类:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@Document</span><span class="token punctuation">(</span>indexName <span class="token operator">=</span> <span class="token string">&quot;trending&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Setting</span><span class="token punctuation">(</span>settingPath <span class="token operator">=</span> <span class="token string">&quot;elasticsearch/settings/default.json&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Data</span>
+<span class="token annotation punctuation">@NoArgsConstructor</span>
+<span class="token annotation punctuation">@FieldNameConstants</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Trending</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Id</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> id<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@CompletionField</span>
+    <span class="token keyword">private</span> <span class="token class-name">Completion</span> suggest<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>使用注解<code>@CompletionField</code>标注补齐字段, 且类型为<code>Completion</code></p><p><strong>注意, 在这里存在小坑</strong></p><p>使用Jackson进行json格式转换, 此时的<code>Completion</code>类并没有无参数构造函数, 提交接口会抛出异常</p><p>所以需要创建一个继承类<code>JsonCompletion</code>对其进行处理:</p><div class="language-java"><pre><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JsonCompletion</span> <span class="token keyword">extends</span> <span class="token class-name">Completion</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">JsonCompletion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>建议器的查询不能使用<code>ElasticsearchRepository</code></p><p>需要在服务层利用<code>CompletionSuggestionBuilder</code>和<code>ElasticsearchRestTemplate</code>:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@RequiredArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TrendingService</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ElasticsearchRestTemplate</span> elasticsearchRestTemplate<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">suggest</span><span class="token punctuation">(</span><span class="token class-name">String</span> text<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">CompletionSuggestionBuilder</span> builder <span class="token operator">=</span> <span class="token class-name">SuggestBuilders</span><span class="token punctuation">.</span><span class="token function">completionSuggestion</span><span class="token punctuation">(</span><span class="token class-name">Trending<span class="token punctuation">.</span>Fields</span><span class="token punctuation">.</span>suggest<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">prefix</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">skipDuplicates</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">SuggestBuilder</span> suggestBuilder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SuggestBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        suggestBuilder<span class="token punctuation">.</span><span class="token function">addSuggestion</span><span class="token punctuation">(</span><span class="token string">&quot;trending-suggest&quot;</span><span class="token punctuation">,</span> builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">CompletionSuggestion</span> suggest <span class="token operator">=</span> elasticsearchRestTemplate<span class="token punctuation">.</span><span class="token function">suggest</span><span class="token punctuation">(</span>suggestBuilder<span class="token punctuation">,</span>
+                        elasticsearchRestTemplate<span class="token punctuation">.</span><span class="token function">getIndexCoordinatesFor</span><span class="token punctuation">(</span><span class="token class-name">Trending</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getSuggest</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">getSuggestion</span><span class="token punctuation">(</span><span class="token string">&quot;trending-suggest&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">CompletionSuggestion<span class="token punctuation">.</span>Entry<span class="token punctuation">.</span>Option</span> option <span class="token operator">:</span> suggest<span class="token punctuation">.</span><span class="token function">getOptions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>option<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>网上部分教程使用的是<code>HashSet&lt;String&gt;</code>作为返回结果</p><p>由于笔者业务需求场景中有权重概念, 返回结果应为有序集, 故选择<code>List&lt;String&gt;</code></p><p>创建接口:</p><div class="language-java"><pre><code><span class="token annotation punctuation">@RestController</span>
+<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">&quot;trending&quot;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@RequiredArgsConstructor</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TrendingApi</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">TrendingService</span> trendingService<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">&quot;suggest/{text}&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> <span class="token function">suggest</span><span class="token punctuation">(</span><span class="token annotation punctuation">@PathVariable</span><span class="token punctuation">(</span><span class="token string">&quot;text&quot;</span><span class="token punctuation">)</span> <span class="token class-name">String</span> text<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> trendingService<span class="token punctuation">.</span><span class="token function">suggest</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>提前录入一些测试数据:</p><div class="language-json"><pre><code><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;suggest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;input&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;张三&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;weight&quot;</span><span class="token operator">:</span> <span class="token number">3</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;2&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;suggest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;input&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;张六&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;weight&quot;</span><span class="token operator">:</span> <span class="token number">6</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;3&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;suggest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;input&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;张十四&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;weight&quot;</span><span class="token operator">:</span> <span class="token number">14</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;4&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;suggest&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">&quot;input&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&quot;张三-法外狂徒&quot;</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;weight&quot;</span><span class="token operator">:</span> <span class="token number">999</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre></div><p>调用接口进行测试:</p><div class="language-"><pre><code>### 建议
+GET http://localhost:9999/trending/suggest/张
+Content-Type: application/json
+</code></pre></div><div class="language-json"><pre><code><span class="token punctuation">[</span>
+  <span class="token string">&quot;张三-法外狂徒&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;张十四&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;张六&quot;</span><span class="token punctuation">,</span>
+  <span class="token string">&quot;张三&quot;</span>
+<span class="token punctuation">]</span>
+</code></pre></div></div></div><footer class="page-footer" data-v-30e7de44 data-v-504b1bfc><div class="edit" data-v-504b1bfc><div class="edit-link" data-v-504b1bfc data-v-40c300d5><!----></div></div><div class="updated" data-v-504b1bfc><!----></div></footer><div class="next-and-prev-link" data-v-30e7de44 data-v-0f10f042><div class="container" data-v-0f10f042><div class="prev" data-v-0f10f042><a class="link" href="/wiki/java/SpringCloud分布式事务Seata" data-v-0f10f042><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class="icon icon-prev" data-v-0f10f042><path d="M19,11H7.4l5.3-5.3c0.4-0.4,0.4-1,0-1.4s-1-0.4-1.4,0l-7,7c-0.1,0.1-0.2,0.2-0.2,0.3c-0.1,0.2-0.1,0.5,0,0.8c0.1,0.1,0.1,0.2,0.2,0.3l7,7c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L7.4,13H19c0.6,0,1-0.4,1-1S19.6,11,19,11z"></path></svg><span class="text" data-v-0f10f042>SpringCloud分布式事务Seata</span></a></div><div class="next" data-v-0f10f042><!----></div></div></div><!--[--><!--]--></div></main></div><!----><!--]--></div>
+    <script>__VP_HASH_MAP__ = JSON.parse("{\"index.md\":\"3818ae6a\",\"java_springboot整合elasticsearch_index.md\":\"7b633122\",\"java_springboot整合钉钉sdk.md\":\"c26aa1a8\",\"java_springcloud分布式事务seata.md\":\"03353e86\",\"java_index.md\":\"19a7e8a6\",\"java_使用druid解析sql查询语句.md\":\"fed2d013\",\"java_开发手册.md\":\"668b2141\",\"training-record_micro-service.md\":\"9034774f\"}")</script>
+    <script type="module" async src="/wiki/assets/app.7004e06b.js"></script>
+    
+  </body>
+</html>
